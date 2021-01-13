@@ -9,14 +9,14 @@ using UnityEngine;
 public class positionRecord
 {
  
-    Vector3 position;
+    Vector3 position; // The position of where the snake has been 
 
    
-    int positionOrder;
+    int positionOrder; //  
 
-    GameObject breadcrumbBox;
+    GameObject breadcrumbBox; // Breadcrumbox used to leave a breadcrumb trail after the snake 
 
-
+    //Setting getters and setters as a security not to alter it from the inspector 
     public Vector3 Position { get => position; set => position = value; }
     public int PositionOrder { get => positionOrder; set => positionOrder = value; }
     public GameObject BreadcrumbBox { get => breadcrumbBox; set => breadcrumbBox = value; }
@@ -30,10 +30,10 @@ public class positionRecord
 public class SnakeGeneraor : MonoBehaviour
 {
 
-    public int snakelength=3;
+    public int snakelength; // A public variable to set the size/length of the snake
      
 
-    GameObject playerBox, breadcrumbBox, pathParent;
+    GameObject playerBox, breadcrumbBox, pathParent, timerUI; 
 
     List<positionRecord> pastPositions;
 
@@ -45,27 +45,33 @@ public class SnakeGeneraor : MonoBehaviour
 
     void Start()
     {
-        pathParent = new GameObject();
-
-        pathParent.transform.position = new Vector3(0f, 0f);
-
-        pathParent.name = "Path Parent";
 
 
-        playerBox = Instantiate(Resources.Load<GameObject>("Square"), new Vector3(0f, 0f), Quaternion.identity);
+        timerUI = Instantiate(Resources.Load<GameObject>("Timer"), new Vector3(0f, 0f), Quaternion.identity); // Get the timer from the resources file in the asset folder and create an instance of it 
 
-        breadcrumbBox = Resources.Load<GameObject>("Square");
+        //the default value for the timer is started
+        timerUI.GetComponentInChildren<timeManager>().timerStarted = true; // Get the timer find the component on it named timeManager(script) which is attached to the timer
 
-        playerBox.GetComponent<SpriteRenderer>().color = Color.black;
+
+
+
+
+
+        playerBox = Instantiate(Resources.Load<GameObject>("Square"), new Vector3(0f, 0f), Quaternion.identity); // Get the sprite(Square) from the resources file in the asset folderand create an instance of it to the player box 
+
+
+        breadcrumbBox = Resources.Load<GameObject>("Square"); // Get the sprite(Square) from the resources file in the asset folder and attach it to the Gameobject breadcrumb box 
+
+        playerBox.GetComponent<SpriteRenderer>().color = Color.black; // Set the playerbox to black
 
      
-        playerBox.AddComponent<SnakeHeadController>();
+        playerBox.AddComponent<SnakeHeadController>(); //  the snake head controller is added to the playerbox for the player to be able to move the head of the player
 
-        playerBox.name = "Player";
+        playerBox.name = "Player"; // Setting the name to Player
 
         pastPositions = new List<positionRecord>();
 
-        drawTail(snakelength);
+        drawTail(snakelength); //If the drawtail is removed from the start the first box behind the sneakhed won't be drawn 
 
     }
 
@@ -91,69 +97,69 @@ public class SnakeGeneraor : MonoBehaviour
 
     // ----->Cour
 
-    void clearTail()
+    void clearLastBox() // This will clear the the box at the end of the tail
     {
         foreach (positionRecord p in pastPositions)
         {
         
-            Destroy(p.BreadcrumbBox);
+            Destroy(p.BreadcrumbBox); // Destroying the breadcrunbBox
         }
     }
 
 
     void drawTail(int length)
     {
-        clearTail();
-        print("in taillllll");
+        clearLastBox(); // If it is not run first the box will be added to snaketail so first we have to clear the last breadcrumb box 
 
-        if (pastPositions.Count > length)
+
+        if (pastPositions.Count > length) // if the pastposition list count (the amount of elements in the list) is larger than the length of the snake
         {
             
-            int tailStartIndex = pastPositions.Count - 1;
-            int tailEndIndex = tailStartIndex - length;
+            int tailStartIndex = pastPositions.Count - 1;  // setting the tail start box index (last breadbox box)
+            int tailEndIndex = tailStartIndex - length; // Setting the last box index (breadbox box behind head)
 
 
     
-            for (int snakeblocks = tailStartIndex; snakeblocks > tailEndIndex; snakeblocks--)
+            for (int snakeblocks = tailStartIndex; snakeblocks > tailEndIndex; snakeblocks--) // Starting at the startindex and going on until the startindex is larger than the tailEndIndex
             {
   
-                pastPositions[snakeblocks].BreadcrumbBox = Instantiate(breadcrumbBox, pastPositions[snakeblocks].Position, Quaternion.identity);
-                pastPositions[snakeblocks].BreadcrumbBox.GetComponent<SpriteRenderer>().color = Color.yellow;
+                pastPositions[snakeblocks].BreadcrumbBox = Instantiate(breadcrumbBox, pastPositions[snakeblocks].Position, Quaternion.identity); // Instatiating the breadcrumb box at index tailstartIndex in the pastpositions list which is of type position record 
+                pastPositions[snakeblocks].BreadcrumbBox.GetComponent<SpriteRenderer>().color = Color.yellow; // Setting the colour for the insta box to yellow 
             }
         }
 
-        if (firstrun)
+        if (firstrun) // Since the first time round the pastpositioncount will be zero we will run this method to populate pastposition
         {
 
             for (int count = length; count > 0; count--)
             {
                 positionRecord fakeBoxPos = new positionRecord();
-                float ycoord = count * -1;
-                fakeBoxPos.Position = new Vector3(0f, ycoord);
-                pastPositions.Add(fakeBoxPos);
+                float ycoord = count * -1; // Setting up the coordinate  to spawn the fakeboxpos
+                fakeBoxPos.Position = new Vector3(0f, ycoord); //placing the facebokx pos 
+                pastPositions.Add(fakeBoxPos);// adding the fakebox pos to the list 
             }
-            firstrun = false;
-            drawTail(length);
+            firstrun = false; // then swithch it off so that we don't we enter the other if statment
+            drawTail(length); // And draw the tail 
           
         }
 
     }
 
-    bool boxExists(Vector3 positionToCheck)
+    bool boxExists(Vector3 positionToCheck) // comparing postion to check with our pastPosition list
     {
    
 
-        foreach (positionRecord p in pastPositions)
+        foreach (positionRecord p in pastPositions) // traversing the pastPositions list 
         {
 
-            if (p.Position == positionToCheck)
+            if (p.Position == positionToCheck) // if the p.postions matches the postionToCeck
             {
-                Debug.Log(p.Position + "Actually was a past position");
-                if (p.BreadcrumbBox != null)
+        
+                if (p.BreadcrumbBox != null) // and if there is a Breadcrumbox 
                 {
                     
               
-                    return true;
+                    return true; // return true 
                 }
             }
         }
@@ -163,26 +169,15 @@ public class SnakeGeneraor : MonoBehaviour
 
     void savePosition()
     {
-        positionRecord currentBoxPos = new positionRecord();
+        positionRecord currentBoxPos = new positionRecord(); 
 
-        currentBoxPos.Position = playerBox.transform.position;
-        positionorder++;
-        currentBoxPos.PositionOrder = positionorder;
+        currentBoxPos.Position = playerBox.transform.position; // currentBoxPos Postions(postion in class position record) is set equal to the playerbox position
+        positionorder++;  // incriment position order 
+        currentBoxPos.PositionOrder = positionorder; // Position order for the current boxpos is set to position order
 
-        if (!boxExists(playerBox.transform.position))
-        {
-            currentBoxPos.BreadcrumbBox = Instantiate(breadcrumbBox, playerBox.transform.position, Quaternion.identity);
+       
 
-            currentBoxPos.BreadcrumbBox.transform.SetParent(pathParent.transform);
-
-            currentBoxPos.BreadcrumbBox.name = positionorder.ToString();
-
-            currentBoxPos.BreadcrumbBox.GetComponent<SpriteRenderer>().color = Color.red;
-
-            currentBoxPos.BreadcrumbBox.GetComponent<SpriteRenderer>().sortingOrder = -1;
-        }
-
-        pastPositions.Add(currentBoxPos);
+        pastPositions.Add(currentBoxPos); // currentbox is added to out pastpositions list 
         Debug.Log("Have made this many moves: " + pastPositions.Count);
 
     }
