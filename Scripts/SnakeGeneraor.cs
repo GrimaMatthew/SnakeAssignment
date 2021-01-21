@@ -30,7 +30,7 @@ public class positionRecord
 public class SnakeGeneraor : MonoBehaviour
 {
 
-    public int snakelength; // A public variable to set the size/length of the snake
+    public static int snakelength; // A public variable to set the size/length of the snake
      
 
     GameObject playerBox, breadcrumbBox, pathParent, timerUI;
@@ -38,6 +38,8 @@ public class SnakeGeneraor : MonoBehaviour
 
 
     List<positionRecord> pastPositions;
+
+    List<GameObject> obstic = new List<GameObject>();
 
     int positionorder = 0;
 
@@ -47,6 +49,7 @@ public class SnakeGeneraor : MonoBehaviour
 
     void Start()
     {
+        
 
        
 

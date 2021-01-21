@@ -5,7 +5,7 @@ using Pathfinding;
 
 public class FoodGen : MonoBehaviour
 {
-    //public List<GameObject> ovs;
+   
 
     GameObject Player;
     GameObject Target;
@@ -17,32 +17,43 @@ public class FoodGen : MonoBehaviour
     Path pathToFollow;
 
 
-    int firstTime = 4;
+    int firstTime = 10;
+    
 
+    
 
+    bool produceFood = true;
     // Start is called before the first frame update
     void Start()
     {
+       
 
-      
-        
+
+
         Target = GameObject.Find("Diamond");
 
 
         seeker = GetComponent<Seeker>();
 
-
+      
 
 
         StartCoroutine(checkFood());
 
         StartCoroutine(generatefood(true));
 
+        
+
+
+
 
     }
 
     // Update is called once per frame
-    
+    private void Update()
+    {
+        foodEater();
+    }
 
 
     IEnumerator checkFood()
@@ -52,7 +63,7 @@ public class FoodGen : MonoBehaviour
         Player = GameObject.Find("Player");
         print(Player.transform.position);
 
-        pathToFollow = seeker.StartPath(Player.transform.position,Target.transform.position );
+        pathToFollow = seeker.StartPath(Player.transform.position, Target.transform.position);
         Player.GetComponent<SpriteRenderer>().color = Color.red;
 
         print("Transforms: " + Player.transform.position + "Waypoints: " + Target.transform.position);
@@ -60,6 +71,7 @@ public class FoodGen : MonoBehaviour
         yield return seeker.IsDone();
         print("CheckFoodRun");
         StartCoroutine(updateGridGraph());
+
 
 
     }
@@ -78,43 +90,98 @@ public class FoodGen : MonoBehaviour
     IEnumerator generatefood(bool loop)
     {
 
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(3.2f);
         List<Vector3> posn = pathToFollow.vectorPath;
         print(posn.Count + "Count");
-        if(loop)
+
+        if (loop)
         {
-            while (true)
+            while (produceFood)
             {
-                for (int i = 0; i <= posn.Count; i ++)
+
+                for (int i = 0; i <= posn.Count; i++)
                 {
 
 
                     print(posn[i] + "printing for posn[i]");
-                    food = Instantiate(Resources.Load<GameObject>("Square"), posn[i+firstTime], Quaternion.identity);  
+                    food = Instantiate(Resources.Load<GameObject>("Square"), posn[i + firstTime], Quaternion.identity);
                     food.GetComponent<SpriteRenderer>().color = Color.green;
-                    print(posn[i + 4] + "printing for posn[i+4]");
-                    print(i+"this is the i value posn");
-                    firstTime++;
-                    food.name = "Food";
-                    yield return new WaitForSeconds(3f);
                     foodKist.Add(food);
-                 
+                    print(posn[i + firstTime] + "printing for posn[i+4]");
+                    print(i + firstTime + "index posn");
+                    print(posn.Count + "size of posn");
+                    print(i + "this is the i value posn");
+                    firstTime += Random.Range(4, 10);
+                    food.name = "Food";
+                    yield return new WaitForSeconds(0.1f);
+              
+
+                    if (foodKist.Count >= 5)
+                    {
+
+                        StopAllCoroutines();
                    
 
-                    }
-                
 
-                    
+                    }
+
+
+
+                }
+
+
+            }
+
+        }
+        yield return null;
+
+    }
+
+  void  foodEater()
+    {
+
+        print(foodKist.Count + "foodlistCounterman");
+
+
+        if (foodKist.Count >= 0)
+        {
+            print("food count" + foodKist.Count);
+
+
+        
+            for (int hdj = foodKist.Count-1; hdj >=0; hdj--)
+            {
+       
+                print(hdj + "prost");
+                print(foodKist[hdj].transform.position + "prost0");
+
+                float dist = Vector3.Distance(Player.transform.position, foodKist[hdj].transform.position);
+                print(dist + "distance of final one");
+
+                if(dist <= 2 && foodKist.Count !=0)
+                {
+                    if(foodKist[hdj] != null)
+                    {
+                        Destroy(foodKist[hdj]);
+                        foodKist.Remove(foodKist[hdj]);
+                        SnakeGeneraor.snakelength += 1;
+                        
+                    }
+
+                  
 
                 }
 
             }
-        yield return null;
+
+        }
+        else
+        {
+            print("Nothing");
+        }
 
     }
-       
-       
-    }
+}
 
    /*
 
