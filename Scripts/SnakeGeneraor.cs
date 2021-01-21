@@ -33,7 +33,9 @@ public class SnakeGeneraor : MonoBehaviour
     public int snakelength; // A public variable to set the size/length of the snake
      
 
-    GameObject playerBox, breadcrumbBox, pathParent, timerUI; 
+    GameObject playerBox, breadcrumbBox, pathParent, timerUI;
+
+
 
     List<positionRecord> pastPositions;
 
@@ -46,6 +48,8 @@ public class SnakeGeneraor : MonoBehaviour
     void Start()
     {
 
+       
+
 
         timerUI = Instantiate(Resources.Load<GameObject>("Timer"), new Vector3(0f, 0f), Quaternion.identity); // Get the timer from the resources file in the asset folder and create an instance of it 
 
@@ -53,8 +57,11 @@ public class SnakeGeneraor : MonoBehaviour
         timerUI.GetComponentInChildren<timeManager>().timerStarted = true; // Get the timer find the component on it named timeManager(script) which is attached to the timer
 
 
+        pathParent = new GameObject();
 
+        pathParent.transform.position = new Vector3(0f, 0f);
 
+        pathParent.name = "Path Parent";
 
 
         playerBox = Instantiate(Resources.Load<GameObject>("Square"), new Vector3(0f, 0f), Quaternion.identity); // Get the sprite(Square) from the resources file in the asset folderand create an instance of it to the player box 
@@ -63,6 +70,8 @@ public class SnakeGeneraor : MonoBehaviour
         breadcrumbBox = Resources.Load<GameObject>("Square"); // Get the sprite(Square) from the resources file in the asset folder and attach it to the Gameobject breadcrumb box 
 
         playerBox.GetComponent<SpriteRenderer>().color = Color.black; // Set the playerbox to black
+
+     
 
      
         playerBox.AddComponent<SnakeHeadController>(); //  the snake head controller is added to the playerbox for the player to be able to move the head of the player
@@ -77,15 +86,18 @@ public class SnakeGeneraor : MonoBehaviour
 
     void Update()
     {
+
         if (Input.anyKeyDown && !((Input.GetMouseButtonDown(0)
           || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))) && !Input.GetKeyDown(KeyCode.X) && !Input.GetKeyDown(KeyCode.Z) && !Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log("a key was pressed " + Time.time);
+         
 
             savePosition();
 
             drawTail(snakelength);
         }
+
+
 
     }
 
@@ -96,6 +108,9 @@ public class SnakeGeneraor : MonoBehaviour
 
 
     // ----->Cour
+
+
+
 
     void clearLastBox() // This will clear the the box at the end of the tail
     {
@@ -175,9 +190,21 @@ public class SnakeGeneraor : MonoBehaviour
         positionorder++;  // incriment position order 
         currentBoxPos.PositionOrder = positionorder; // Position order for the current boxpos is set to position order
 
-       
+        if (!boxExists(playerBox.transform.position)) // boxExists our method returns True/False and is checking the playerbox.transform position and if it matches 
+            //This is run if it is false so the box doesnt exists 
+        {
+            currentBoxPos.BreadcrumbBox = Instantiate(breadcrumbBox, playerBox.transform.position, Quaternion.identity); // if box doesnt exists instintiate a bread box  at playerbox position
 
-        pastPositions.Add(currentBoxPos); // currentbox is added to out pastpositions list 
+            currentBoxPos.BreadcrumbBox.transform.SetParent(pathParent.transform); // 
+
+            currentBoxPos.BreadcrumbBox.name = positionorder.ToString();
+
+            currentBoxPos.BreadcrumbBox.GetComponent<SpriteRenderer>().color = Color.red;
+
+            currentBoxPos.BreadcrumbBox.GetComponent<SpriteRenderer>().sortingOrder = -1;
+        }
+
+        pastPositions.Add(currentBoxPos); // adding to the past positions
         Debug.Log("Have made this many moves: " + pastPositions.Count);
 
     }

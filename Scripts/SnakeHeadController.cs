@@ -5,17 +5,17 @@ using UnityEngine;
 public class SnakeHeadController : MonoBehaviour
 {
     SnakeGeneraor mysnakegenerator;
+
+
     
 
 
     private void Start()
     {
         mysnakegenerator = Camera.main.GetComponent<SnakeGeneraor>();
+
+       
     }
-
-
-
-   
 
     // Update is called once per frame
     void Update()
