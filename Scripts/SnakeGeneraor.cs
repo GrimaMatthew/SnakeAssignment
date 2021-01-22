@@ -39,7 +39,8 @@ public class SnakeGeneraor : MonoBehaviour
 
     List<positionRecord> pastPositions;
 
-    List<GameObject> obstic = new List<GameObject>();
+     public List<GameObject> obstic = new List<GameObject>();
+    
 
     int positionorder = 0;
 
@@ -50,7 +51,7 @@ public class SnakeGeneraor : MonoBehaviour
     void Start()
     {
         
-
+     
        
 
 
@@ -101,6 +102,28 @@ public class SnakeGeneraor : MonoBehaviour
         }
 
 
+        foreach (GameObject o in obstic)
+        {
+            float dist = Vector3.Distance(playerBox.transform.position, o.transform.position);
+            print("trop1: " + dist);
+
+            if (dist<=2.5)
+            {
+                print("trop2: " + dist);
+                print("You Done Now");
+
+            }
+        }
+
+      
+ 
+
+
+
+
+
+
+
 
     }
 
@@ -110,7 +133,7 @@ public class SnakeGeneraor : MonoBehaviour
 
 
 
-    // ----->Cour
+    // ----->Cour & Methods
 
 
 
@@ -160,6 +183,27 @@ public class SnakeGeneraor : MonoBehaviour
             drawTail(length); // And draw the tail 
           
         }
+
+    }
+
+    public bool hitTail(Vector3 headPosition, int length)
+    {
+        int tailStartIndex = pastPositions.Count - 1;
+        int tailEndIndex = tailStartIndex - length;
+
+        //I am checking all the positions in the tail of the snake
+        for (int snakeblocks = tailStartIndex; snakeblocks > tailEndIndex; snakeblocks--)
+        {
+            if ((headPosition == pastPositions[snakeblocks].Position) && (pastPositions[snakeblocks].BreadcrumbBox != null))
+            {
+               
+                 Debug.Log("Hit Tail");
+                return true;
+            }
+        }
+
+
+        return false;
 
     }
 
