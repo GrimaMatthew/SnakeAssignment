@@ -30,16 +30,16 @@ public class positionRecord
 public class SnakeGeneraor : MonoBehaviour
 {
 
-    public static int snakelength; // A public variable to set the size/length of the snake
+   // A public variable to set the size/length of the snake
      
 
-    GameObject playerBox, breadcrumbBox, pathParent, timerUI;
+    GameObject playerBox, breadcrumbBox, pathParent, timerUI,target;
 
 
 
     List<positionRecord> pastPositions;
 
-     public List<GameObject> obstic = new List<GameObject>();
+    public List<GameObject> obstic = new List<GameObject>();
     
 
     int positionorder = 0;
@@ -50,10 +50,10 @@ public class SnakeGeneraor : MonoBehaviour
 
     void Start()
     {
-        
-     
-       
 
+
+
+        target = GameObject.Find("Diamond");
 
         timerUI = Instantiate(Resources.Load<GameObject>("Timer"), new Vector3(0f, 0f), Quaternion.identity); // Get the timer from the resources file in the asset folder and create an instance of it 
 
@@ -84,7 +84,7 @@ public class SnakeGeneraor : MonoBehaviour
 
         pastPositions = new List<positionRecord>();
 
-        drawTail(snakelength); //If the drawtail is removed from the start the first box behind the sneakhed won't be drawn 
+        drawTail(GameManager.snakeLength); //If the drawtail is removed from the start the first box behind the sneakhed won't be drawn 
 
     }
 
@@ -98,7 +98,7 @@ public class SnakeGeneraor : MonoBehaviour
 
             savePosition();
 
-            drawTail(snakelength);
+            drawTail(GameManager.snakeLength);
         }
 
 
@@ -115,13 +115,13 @@ public class SnakeGeneraor : MonoBehaviour
             }
         }
 
-      
- 
+        float disttoGoal = Vector3.Distance(playerBox.transform.position, target.transform.position);
+        print("Distance to goal: "+disttoGoal);
+        if (disttoGoal<=2)
+        {
+            GameManager.finishedlv1 = true;
 
-
-
-
-
+        }
 
 
 
