@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public static GameManager inst;
 
     public static bool finishedlv1 = false;
+    public static bool inlvl2 = false;
     bool timerset = true;
 
     GameObject timer;
@@ -63,6 +64,12 @@ public class GameManager : MonoBehaviour
             finishedlv1 = false;
 
         }
+
+        if(sceneName == "Level2")
+        {
+            inlvl2 = true;
+        }
+
     }
 
     private void setTimer()

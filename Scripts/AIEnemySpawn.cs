@@ -12,7 +12,7 @@ public class AIEnemySpawn : MonoBehaviour
     Transform target;
 
 
-    GameObject enemybreadcrumbBox;
+    GameObject enemybread;
 
 
 
@@ -22,7 +22,7 @@ public class AIEnemySpawn : MonoBehaviour
 
 
     int enemyPositionOrder = 0;
-    int enemyLength = 4;
+    int enemyLength = 3;
 
 
     bool firstrun = true;
@@ -37,39 +37,25 @@ public class AIEnemySpawn : MonoBehaviour
 
         StartCoroutine(pathing());
         StartCoroutine(updateGridGraph());
+    
 
 
-        ///---->
-        ///
-  
-
-
-        enemybreadcrumbBox = Resources.Load<GameObject>("Square"); // Get the sprite(Square) from the resources file in the asset folder and attach it to the Gameobject breadcrumb box
-        enemybreadcrumbBox.name = "bread";
+        enemybread = Resources.Load<GameObject>("Square"); // Get the sprite(Square) from the resources file in the asset folder and attach it to the Gameobject breadcrumb box 
 
         this.gameObject.GetComponent<SpriteRenderer>().color = Color.grey; // Set the playerbox to black
 
+        enemybread.name = "bread";
+
         enemyPastPositions = new List<positionRecord>();
 
-        drawTail(enemyLength);
-
-
-
-        ///-->
     }
 
-    private void Update()
-    {
-        savePosition();
-        drawTail(enemyLength);
-
-    }
 
 
     IEnumerator pathing() {
 
 
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(2f);
 
 
         AstarPath.active.Scan();
@@ -120,6 +106,8 @@ public class AIEnemySpawn : MonoBehaviour
                 {
                     t.position = Vector3.MoveTowards(t.position, posns[counter], 1f);
                     yield return new WaitForSeconds(0.5f);
+                    savePosition();
+                    enemydrawTail(enemyLength);
                     pathToFollow = seeker.StartPath(t.position, target.position);
                     yield return seeker.IsDone();
                     posns = pathToFollow.vectorPath;
@@ -132,27 +120,28 @@ public class AIEnemySpawn : MonoBehaviour
 
 
 
-
-
     ////--->
     void clearLastBox() // This will clear the the box at the end of the tail
     {
+      
         foreach (positionRecord p in enemyPastPositions)
         {
 
-            Destroy(p.BreadcrumbBox); // Destroying the breadcrunbBox
+            Destroy(p.enemyBreadcrumbBox); // Destroying the breadcrunbBox
         }
     }
 
 
-    void drawTail(int length)
+    void enemydrawTail(int length)
     {
-        
-        clearLastBox(); // If it is not run first the box will be added to snaketail so first we have to clear the last breadcrumb box 
+        clearLastBox();
 
 
-        if (enemyPastPositions.Count > length) // if the pastposition list count (the amount of elements in the list) is larger than the length of the snake
+
+
+        if (enemyPastPositions.Count >= length) // if the pastposition list count (the amount of elements in the list) is larger than the length of the snake
         {
+    
 
             int tailStartIndex = enemyPastPositions.Count - 1;  // setting the tail start box index (last breadbox box)
             int tailEndIndex = tailStartIndex - length; // Setting the last box index (breadbox box behind head)
@@ -162,23 +151,35 @@ public class AIEnemySpawn : MonoBehaviour
             for (int snakeblocks = tailStartIndex; snakeblocks > tailEndIndex; snakeblocks--) // Starting at the startindex and going on until the startindex is larger than the tailEndIndex
             {
 
-                enemyPastPositions[snakeblocks].BreadcrumbBox = Instantiate(enemybreadcrumbBox, enemyPastPositions[snakeblocks].Position, Quaternion.identity); // Instatiating the breadcrumb box at index tailstartIndex in the pastpositions list which is of type position record 
-                enemyPastPositions[snakeblocks].BreadcrumbBox.GetComponent<SpriteRenderer>().color = Color.yellow; // Setting the colour for the insta box to yellow 
+                enemyPastPositions[snakeblocks].enemyBreadcrumbBox = Instantiate(enemybread, enemyPastPositions[snakeblocks].Position, Quaternion.identity); // Instatiating the breadcrumb box at index tailstartIndex in the pastpositions list which is of type position record 
+
+
+                enemyPastPositions[snakeblocks].enemyBreadcrumbBox.GetComponent<SpriteRenderer>().color = Color.cyan; // Setting the colour for the insta box to yellow 
             }
         }
+
+
 
         if (firstrun) // Since the first time round the pastpositioncount will be zero we will run this method to populate pastposition
         {
 
             for (int count = length; count > 0; count--)
             {
-                positionRecord fakeBoxPos = new positionRecord();
-                float ycoord = count * -1; // Setting up the coordinate  to spawn the fakeboxpos
-                fakeBoxPos.Position = new Vector3(0f, ycoord); //placing the facebokx pos 
-                enemyPastPositions.Add(fakeBoxPos);// adding the fakebox pos to the list 
+
+           
+
+                positionRecord efakeBoxPos = new positionRecord();
+                float ycoord = count ; // Setting up the coordinate  to spawn the fakeboxpos
+                efakeBoxPos.Position = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y); //placing the facebokx pos 
+                enemyPastPositions.Add(efakeBoxPos);// adding the fakebox pos to the list
+                print("inside first run");
+               
             }
+
             firstrun = false; // then swithch it off so that we don't we enter the other if statment
-            drawTail(length); // And draw the tail 
+            enemydrawTail(enemyLength); // And draw the tail
+
+
 
         }
 
@@ -195,10 +196,8 @@ public class AIEnemySpawn : MonoBehaviour
             if (p.Position == positionToCheck) // if the p.postions matches the postionToCeck
             {
 
-                if (p.BreadcrumbBox != null) // and if there is a Breadcrumbox 
+                if (p.enemyBreadcrumbBox != null) // and if there is a Breadcrumbox 
                 {
-
-
                     return true; // return true 
                 }
             }
@@ -218,14 +217,10 @@ public class AIEnemySpawn : MonoBehaviour
         if (!boxExists(this.gameObject.transform.position)) // boxExists our method returns True/False and is checking the playerbox.transform position and if it matches 
                                                       //This is run if it is false so the box doesnt exists 
         {
-            currentBoxPos.BreadcrumbBox = Instantiate(enemybreadcrumbBox, this.gameObject.transform.position, Quaternion.identity); // if box doesnt exists instintiate a bread box  at playerbox position
+            print("inside save");
+            currentBoxPos.enemyBreadcrumbBox = Instantiate(enemybread, this.transform.position, Quaternion.identity);  // if box doesnt exists instintiate a bread box  at playerbox position
 
-
-            currentBoxPos.BreadcrumbBox.name = enemyPositionOrder.ToString();
-
-            currentBoxPos.BreadcrumbBox.GetComponent<SpriteRenderer>().color = Color.red;
-
-            currentBoxPos.BreadcrumbBox.GetComponent<SpriteRenderer>().sortingOrder = -1;
+            currentBoxPos.enemyBreadcrumbBox.GetComponent<SpriteRenderer>().sortingOrder = -1;
         }
 
         enemyPastPositions.Add(currentBoxPos); // adding to the past positions

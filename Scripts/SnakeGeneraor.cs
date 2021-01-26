@@ -14,12 +14,14 @@ public class positionRecord
    
     int positionOrder; //  
 
-    GameObject breadcrumbBox; // Breadcrumbox used to leave a breadcrumb trail after the snake 
+    GameObject breadcrumbBox; // Breadcrumbox used to leave a breadcrumb trail after the snake
+    GameObject enemybreadcrumbBox; // Breadcrumbox used to leave a breadcrumb trail after the snake 
 
     //Setting getters and setters as a security not to alter it from the inspector 
     public Vector3 Position { get => position; set => position = value; }
     public int PositionOrder { get => positionOrder; set => positionOrder = value; }
     public GameObject BreadcrumbBox { get => breadcrumbBox; set => breadcrumbBox = value; }
+    public GameObject enemyBreadcrumbBox { get => enemybreadcrumbBox; set => enemybreadcrumbBox = value; }
 }
 
 //---> Class
@@ -103,10 +105,10 @@ public class SnakeGeneraor : MonoBehaviour
             float dist = Vector3.Distance(playerBox.transform.position, o.transform.position);
             print("trop1: " + dist);
 
-            if (dist<=2.5)
+            if (dist<=2)
             {
                 print("trop2: " + dist);
-                print("You Done Now");
+                print("Level 1 Lost");
 
             }
         }
