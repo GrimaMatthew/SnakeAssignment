@@ -33,7 +33,7 @@ public class SnakeGeneraor : MonoBehaviour
    // A public variable to set the size/length of the snake
      
 
-    GameObject playerBox, breadcrumbBox, pathParent, timerUI,target;
+    GameObject playerBox, breadcrumbBox, pathParent,target;
 
 
 
@@ -55,11 +55,7 @@ public class SnakeGeneraor : MonoBehaviour
 
         target = GameObject.Find("Diamond");
 
-        timerUI = Instantiate(Resources.Load<GameObject>("Timer"), new Vector3(0f, 0f), Quaternion.identity); // Get the timer from the resources file in the asset folder and create an instance of it 
-
-        //the default value for the timer is started
-        timerUI.GetComponentInChildren<timeManager>().timerStarted = true; // Get the timer find the component on it named timeManager(script) which is attached to the timer
-
+    
 
         pathParent = new GameObject();
 
