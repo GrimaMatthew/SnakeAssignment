@@ -22,7 +22,7 @@ public class AIEnemySpawn : MonoBehaviour
 
 
     int enemyPositionOrder = 0;
-    int enemyLength = 3;
+    public  static int enemyLength = 3;
 
 
     bool firstrun = true;

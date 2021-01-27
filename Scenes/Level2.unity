@@ -2592,6 +2592,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIS
       objectReference: {fileID: 0}
+    - target: {fileID: 2433819699450399581, guid: a084a5a7e1335435ea3af28c7f3f6e49, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2433819699450399585, guid: a084a5a7e1335435ea3af28c7f3f6e49, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.5

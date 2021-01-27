@@ -11,7 +11,9 @@ public class GameManager : MonoBehaviour
     public static GameManager inst;
 
     public static bool finishedlv1 = false;
+    public static bool finishedlv2 = false;
     public static bool inlvl2 = false;
+    public static bool inlvl1 = false; 
     bool timerset = true;
 
     GameObject timer;
@@ -54,6 +56,7 @@ public class GameManager : MonoBehaviour
     {
 
         SceneManager.LoadScene("Level1");
+        inlvl1 = true;
     }
 
     private void loadLevels()
@@ -64,8 +67,15 @@ public class GameManager : MonoBehaviour
             finishedlv1 = false;
 
         }
+        if (finishedlv2)
+        {
+            SceneManager.LoadScene("Level3");
+            finishedlv2 = false;
 
-        if(sceneName == "Level2")
+        }
+
+
+        if (sceneName == "Level2")
         {
             inlvl2 = true;
         }

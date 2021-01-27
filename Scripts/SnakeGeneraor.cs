@@ -115,9 +115,16 @@ public class SnakeGeneraor : MonoBehaviour
 
         float disttoGoal = Vector3.Distance(playerBox.transform.position, target.transform.position);
         print("Distance to goal: "+disttoGoal);
-        if (disttoGoal<=2)
+        if (disttoGoal<=2 && GameManager.inlvl1)
         {
             GameManager.finishedlv1 = true;
+
+        }
+
+        if(disttoGoal <= 2 && GameManager.inlvl2)
+        {
+            GameManager.finishedlv2 = true;
+
 
         }
 

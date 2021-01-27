@@ -16,7 +16,8 @@ public class FoodGen : MonoBehaviour
     GameObject Player;  // Player GameObject
     GameObject Target; // Target GameOnbject
     GameObject food; // Food Gameobject
-    GameObject enemy;
+    
+    GameObject AIS;
     Seeker seeker; // Getting Seeker
 
     List<GameObject> foodKist = new List<GameObject>(); // List which hold the food gameobject
@@ -42,6 +43,7 @@ public class FoodGen : MonoBehaviour
 
         StartCoroutine(checkFood());
         StartCoroutine(generatefood(true));
+        StartCoroutine(createAI());
 
     
 
@@ -51,6 +53,8 @@ public class FoodGen : MonoBehaviour
     private void Update()
     {
         foodEater();
+        StartCoroutine(AIeat());
+
 
     }
 
@@ -58,7 +62,7 @@ public class FoodGen : MonoBehaviour
 
     IEnumerator checkFood()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.1f);
 
         Player = GameObject.Find("Player"); // Getting the player
         print(Player.transform.position);
@@ -79,14 +83,11 @@ public class FoodGen : MonoBehaviour
     IEnumerator generatefood(bool loop)
     {
 
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(0.2f);
         List<Vector3> posn = pathToFollow.vectorPath; // Creating a list of type vector 3 to store the path 
         print(posn.Count + "Count");
 
-        if (loop) 
-        {
-            while (produceFood)
-            {
+       
 
                 for (int i = 0; i <= posn.Count; i++) // looping throught the path list created by the seaker 
                 {
@@ -104,13 +105,13 @@ public class FoodGen : MonoBehaviour
                     yield return new WaitForSeconds(0.1f);
               
 
-                    if (foodKist.Count >= 5) // Generating 6 blocks of food
+                    if (foodKist.Count >= 6) // Generating 6 blocks of food
                     {
-                        StopAllCoroutines();
+                        yield break;
                     }
 
-                }
-            }
+                
+            
         }
 
         yield return null;
@@ -121,9 +122,9 @@ public class FoodGen : MonoBehaviour
     {
 
         print(foodKist.Count + "foodlistCounterman");
+        
 
-
-        if (foodKist.Count >= 0) // count has to be larger then one meaning that the list is not empty
+        if (foodKist != null) // count has to be larger then one meaning that the list is not empty
         {
             print("food count" + foodKist.Count);
 
@@ -139,7 +140,7 @@ public class FoodGen : MonoBehaviour
                 float dist = Vector3.Distance(Player.transform.position, foodKist[hdj].transform.position); // taking the distance from the player to the food
                 print(dist + "distance of final one");
 
-                if(dist <= 2 && foodKist.Count !=0) // if this distance is reached
+                if(dist <= 2 && foodKist !=null) // if this distance is reached
                 {
                     if(foodKist[hdj] != null) // and the food at that index is not null
                     {
@@ -150,26 +151,79 @@ public class FoodGen : MonoBehaviour
                 }// taking the distance from the player to the food
 
 
-                if (GameManager.inlvl2)
-                {
-                    enemy = GameObject.Find("AIs");
-                    float dist2 = Vector3.Distance(Player.transform.position, foodKist[hdj].transform.position); // taking the distance from the player to the food
-                    print(dist2 + " Enemy dist");
-
-
-
-
-                }
-
-
+            
             }
 
         }
 
-        else
+    }
+
+
+   IEnumerator createAI()
+    {
+
+        yield return new WaitForSeconds(3f);
+
+      
+
+        if (foodKist != null && GameManager.inlvl2 )
         {
-            print("Nothing");
+            int ranNum = Random.Range(0,foodKist.Count-1);
+
+            AIS = Resources.Load<GameObject>("AIS");
+
+            AIS=Instantiate(AIS, foodKist[ranNum].transform.position, Quaternion.identity);
+
+            Destroy(foodKist[ranNum]);
+
+            foodKist.Remove(foodKist[ranNum]);
+
+
+
         }
+
+     
+
+            
+
+    }
+
+
+
+
+    IEnumerator AIeat()
+    {
+        yield return new WaitForSeconds(5f);
+
+        if (GameManager.inlvl2 && foodKist != null)
+
+        {
+
+
+            for (int hdj = foodKist.Count - 1; hdj >= 0; hdj--) // traversing the list top to bottom as if you traverse it bottom to top an
+                                                                // error  occurs as you cannot traverse a list top to bottom while deleting the bottom value
+            {
+                float dist2 = Vector3.Distance(AIS.transform.position, foodKist[hdj].transform.position); // taking the distance from the player to the food
+                print(dist2 + " Enemy dist");
+
+                if (dist2 <= 2 && foodKist.Count != 0) // if this distance is reached
+                {
+
+                    if (foodKist[hdj] != null) // and the food at that index is not null
+                    {
+                        print("eaten");
+                        Destroy(foodKist[hdj]); // destroy that food 
+                        foodKist.Remove(foodKist[hdj]); // remove the food from the list 
+                        AIEnemySpawn.enemyLength += 1; // increase the snake length by 1   
+                    }
+
+
+                }// taking the distance from the player to the food
+            }
+
+        }
+
+        yield return null ;
 
     }
 }
