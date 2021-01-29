@@ -9,7 +9,7 @@ public class timeManager : MonoBehaviour
 
     public bool timerStarted;
 
-    float timerValue = 0f;
+    public static float timerValue = 0f;
 
     Text timerText;
 
@@ -21,9 +21,9 @@ public class timeManager : MonoBehaviour
             if (timerStarted)
             {
                 //measure the time
-                timerValue++;
+                timerValue++; // gamedata . timer++
 
-                float minutes = timerValue / 60f;
+                float minutes = timerValue / 120f; //120
                 float seconds = timerValue % 60f;
 
                 timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);

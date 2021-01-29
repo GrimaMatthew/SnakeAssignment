@@ -128,6 +128,12 @@ public class SnakeGeneraor : MonoBehaviour
 
         }
 
+        if (disttoGoal <= 2 && GameManager.inlvl3)
+        {
+            GameManager.finishedlv3 = true; 
+
+
+        }
 
 
     }
