@@ -29,13 +29,10 @@ public class GameManager : MonoBehaviour
  
 
 
-    List<HighScore> HighS;
-
 
     private void Start()
     {
-        HighS = new List<HighScore>();
-        LoadList();
+      
         
 
 
@@ -54,8 +51,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        print("My high score counte" + HighS.Count);
-        print(HighS.Count + "Name Length highscoreCount");
+      
 
 
         print(namePlo+" this is my name");
@@ -70,13 +66,17 @@ public class GameManager : MonoBehaviour
         setTimer();
 
 
+
+        PlayerPrefs.SetFloat("Prefscore", timeManager.timerValue);
+
+
     }
 
     public void BtnLoadGame()
     {
          namePlo = nameTro.text;
-     
 
+        PlayerPrefs.SetString("Username", namePlo);
         SceneManager.LoadScene("Level1");
         inlvl1 = true;
     }
@@ -101,11 +101,11 @@ public class GameManager : MonoBehaviour
         if (finishedlv3)
         {
 
-            HighS.Add(new HighScore(namePlo, timeManager.timerValue));
-            SaveList();
+           
+         
       
             SceneManager.LoadScene("End");
-            StartCoroutine(disData());
+           
             finishedlv3 = false; 
 
             
@@ -173,72 +173,10 @@ public class GameManager : MonoBehaviour
     }
 
 
-    IEnumerator disData()
-    {
-        yield return new WaitForSeconds(0.6f);
-       leaderboard = GameObject.Find("Score").GetComponent<Text>();
-
-
-        foreach (HighScore s in HighS)
-        {
-            print(HighS.Count+"highscore counter");
-            print("tronga");
-            leaderboard.text = s.rname +"  "+ s.rtime ;
-            Debug.Log(s.rname + " " + s.rtime);
-
-
-        }
-
-
-
-    }
 
 
   
 
-    void SaveList()
-    {
-        string[] na = new string[HighS.Count];
-
-        float[] pl = new float[HighS.Count];
-
-        int counter = 0;
-
-        foreach (HighScore s in HighS)
-        {
-            na[counter] = s.rname;
-            pl[counter] = s.rtime;
-            counter++;
-        }
-
-
-        PlayerPrefsX.SetStringArray("Rname", na);
-        PlayerPrefsX.SetFloatArray("RTime", pl);
-
-    }
-
-
-    void LoadList()
-    {
-        string[] na;
-
-        float[] pl;
-
-        na = PlayerPrefsX.GetStringArray("Rname");
-        pl = PlayerPrefsX.GetFloatArray("Rtime");
-
-      
-        print(na.Length + "Name Length" );
-
-        for (int i = 0; i <= na.Length-1; i++)
-        {
-            print(na + "ioen");
-        }
-
-      
-        print(HighS.Count + "Name Length highscoreCount");
-
-
-    }
+   
 
 }
