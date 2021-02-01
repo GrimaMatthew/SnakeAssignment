@@ -12,13 +12,15 @@ public class AIEnemySpawn : MonoBehaviour
     Transform target;
 
 
+    GameObject modeSeek;
     GameObject enemybread;
 
 
 
     List<positionRecord> enemyPastPositions;
+    List<GameObject> modeSeeker;
 
- 
+
 
 
     int enemyPositionOrder = 0;
@@ -47,7 +49,21 @@ public class AIEnemySpawn : MonoBehaviour
         enemybread.name = "bread";
 
         enemyPastPositions = new List<positionRecord>();
+        modeSeeker = new List<GameObject>();
 
+    }
+
+    private void Update()
+    {
+
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            StartCoroutine(seekInDa());
+
+        }
+
+     
+   
     }
 
 
@@ -106,16 +122,85 @@ public class AIEnemySpawn : MonoBehaviour
                 {
                     t.position = Vector3.MoveTowards(t.position, posns[counter], 1f);
                     yield return new WaitForSeconds(0.5f);
+
+
+
                     savePosition();
                     enemydrawTail(enemyLength);
                     pathToFollow = seeker.StartPath(t.position, target.position);
                     yield return seeker.IsDone();
                     posns = pathToFollow.vectorPath;
 
+                    if (Vector3.Distance(target.position, this.transform.position) <= 0.5f)
+                    {
+                        GameManager.lostGame = true;
+                    }
+
+
                 }
 
             }
         }
+    }
+
+
+    void  DestroyseekInDa()
+    {
+        foreach (GameObject p in modeSeeker)
+        {
+            Destroy(p);
+
+        }
+
+
+    }
+
+
+    IEnumerator seekInDa()
+    {
+       
+
+        DestroyseekInDa();
+
+       
+
+        if (modeSeeker.Count ==0)
+        {
+            yield return new WaitForSeconds(1.6f);
+        }
+
+        
+
+        
+
+        List<Vector3> Seekposns = pathToFollow.vectorPath;
+
+     
+
+        for (int i = 0; i < Seekposns.Count; i++)
+        {
+
+
+            modeSeek = Instantiate(Resources.Load<GameObject>("Square"), Seekposns[i], Quaternion.identity);
+            modeSeek.gameObject.GetComponent<SpriteRenderer>().color = Color.magenta;
+            modeSeek.name = "md";
+
+            modeSeek.GetComponent<SpriteRenderer>().sortingOrder = -8;
+            modeSeeker.Add(modeSeek);
+
+
+        }
+
+        if (seeker.IsDone())
+        {
+            yield return new WaitForSeconds(6f);
+            DestroyseekInDa();
+
+
+
+        }
+   
+        yield return null;
     }
 
 

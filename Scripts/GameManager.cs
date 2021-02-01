@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour
     public static bool inlvl2 = false;
     public static bool inlvl1 = false;
     public static bool inlvl3 = false;
+    public static bool lostGame = false; 
+
     bool timerset = true;
 
     GameObject timer;
@@ -127,6 +129,13 @@ public class GameManager : MonoBehaviour
             inlvl3 = true;
         }
 
+        if (lostGame)
+        {
+            print("Loser");
+            SceneManager.LoadScene("Lost");
+
+        }
+
 
 
 
@@ -155,6 +164,8 @@ public class GameManager : MonoBehaviour
 
 
     }
+
+
 
 
 

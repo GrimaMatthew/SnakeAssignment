@@ -22,6 +22,8 @@ public class positionRecord
     public int PositionOrder { get => positionOrder; set => positionOrder = value; }
     public GameObject BreadcrumbBox { get => breadcrumbBox; set => breadcrumbBox = value; }
     public GameObject enemyBreadcrumbBox { get => enemybreadcrumbBox; set => enemybreadcrumbBox = value; }
+
+
 }
 
 //---> Class
@@ -41,6 +43,8 @@ public class SnakeGeneraor : MonoBehaviour
 
     List<positionRecord> pastPositions;
 
+
+
     public List<GameObject> obstic = new List<GameObject>();
     
 
@@ -49,9 +53,18 @@ public class SnakeGeneraor : MonoBehaviour
 
     bool firstrun = true;
 
+    float xMin;
+    float xMax;
+    float yMin;
+    float yMax;
+    float padding = 1;
+
 
     void Start()
     {
+      
+
+       
 
 
 
@@ -89,8 +102,7 @@ public class SnakeGeneraor : MonoBehaviour
     void Update()
     {
 
-        if (Input.anyKeyDown && !((Input.GetMouseButtonDown(0)
-          || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))) && !Input.GetKeyDown(KeyCode.X) && !Input.GetKeyDown(KeyCode.Z) && !Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow))
         {
          
 
@@ -105,17 +117,19 @@ public class SnakeGeneraor : MonoBehaviour
             float dist = Vector3.Distance(playerBox.transform.position, o.transform.position);
             print("trop1: " + dist);
 
-            if (dist<=2)
+            if (dist<=1 )
             {
-                print("trop2: " + dist);
-                print("Level 1 Lost");
+
+                GameManager.lostGame = true;
+                print("Lost"+GameManager.lostGame);
 
             }
+         
         }
 
         float disttoGoal = Vector3.Distance(playerBox.transform.position, target.transform.position);
         print("Distance to goal: "+disttoGoal);
-        if (disttoGoal<=2 && GameManager.inlvl1)
+        if (disttoGoal<=2 && GameManager.inlvl1 && GameManager.snakeLength ==6)
         {
             GameManager.finishedlv1 = true;
 
@@ -217,6 +231,10 @@ public class SnakeGeneraor : MonoBehaviour
         return false;
 
     }
+
+
+    
+
 
     bool boxExists(Vector3 positionToCheck) // comparing postion to check with our pastPosition list
     {
